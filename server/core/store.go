@@ -141,6 +141,18 @@ func (s *StoreInfo) IsTombstone() bool {
 	return s.GetState() == metapb.StoreState_Tombstone
 }
 
+func (s *StoreInfo) IsSlow() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.rawStats.GetSlowScore() == 100
+}
+
+func (s *StoreInfo) IsSlowRecovered() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.rawStats.GetSlowScore() == 0
+}
+
 // IsPhysicallyDestroyed checks if the store's physically destroyed.
 func (s *StoreInfo) IsPhysicallyDestroyed() bool {
 	return s.GetMeta().GetPhysicallyDestroyed()
